@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen p-4">
+    <!-- ===== Add QR Form ===== -->
+    <div class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto mb-8">
+      <h2 class="text-2xl font-bold mb-4 text-center">Add New QR</h2>
+      <form id="add-qr-form" class="space-y-4">
+        <input
+          type="text"
+          id="title"
+          placeholder="Title"
+          required
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <input
+          type="text"
+          id="description"
+          placeholder="Description"
+          required
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button
+          type="submit"
+          class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+
+    <!-- ===== Pending Table ===== -->
+    <div class="mb-8">
+      <h2 class="text-xl font-bold mb-2 text-orange-600">Pending Requests</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-orange-50 rounded-lg">
+          <thead>
+            <tr class="bg-orange-200">
+              <th class="px-4 py-2">Title</th>
+              <th class="px-4 py-2">Description</th>
+              <th class="px-4 py-2">QR Code</th>
+              <th class="px-4 py-2">Upload PDF</th>
+            </tr>
+          </thead>
+          <tbody id="pending-body" class="divide-y divide-orange-300">
+            <!-- Pending rows inserted by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Published Table ===== -->
+    <div class="mb-8">
+      <h2 class="text-xl font-bold mb-2 text-green-600">Published</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-green-50 rounded-lg">
+          <thead>
+            <tr class="bg-green-200">
+              <th class="px-4 py-2">Title</th>
+              <th class="px-4 py-2">Description</th>
+              <th class="px-4 py-2">QR Code</th>
+              <th class="px-4 py-2">PDF</th>
+              <th class="px-4 py-2">Delete</th>
+            </tr>
+          </thead>
+          <tbody id="published-body" class="divide-y divide-green-300">
+            <!-- Published rows inserted by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Deleted Table ===== -->
+    <div class="mb-8">
+      <h2 class="text-xl font-bold mb-2 text-red-600">Deleted</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-red-50 rounded-lg">
+          <thead>
+            <tr class="bg-red-200">
+              <th class="px-4 py-2">Title</th>
+              <th class="px-4 py-2">Description</th>
+            </tr>
+          </thead>
+          <tbody id="deleted-body" class="divide-y divide-red-300">
+            <!-- Deleted rows inserted by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      // ===== Utility: Direct Download =====
+      async function downloadFile(url, filename) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("Failed to fetch file");
+
+          const blob = await res.blob();
+          const link = document.createElement("a");
+          link.href = window.URL.createObjectURL(blob);
+          link.download = filename;
+          link.click();
+          window.URL.revokeObjectURL(link.href);
+        } catch (err) {
+          console.error(err);
+          alert("Error downloading file");
+        }
+      }
+
+      // ===== Add QR Form =====
+      const form = document.getElementById("add-qr-form");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+
+        try {
+          const res = await fetch("http://localhost:8000/addqr", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, description }),
+          });
+          const data = await res.json();
+          alert("QR added successfully!");
+          form.reset();
+          fetchPendingFiles();
+        } catch (err) {
+          console.error(err);
+          alert("Error calling /addqr");
+        }
+      });
+
+      // ===== Fetch Tables =====
+      async function fetchPendingFiles() {
+        const res = await fetch("http://localhost:8000/getpending");
+        const data = await res.json();
+        const tbody = document.getElementById("pending-body");
+        tbody.innerHTML = "";
+        data.data.forEach((file) => {
+          const row = document.createElement("tr");
+          row.classList.add("bg-orange-50");
+          row.innerHTML = `
+          <td class="px-4 py-2">${file.title}</td>
+          <td class="px-4 py-2">${file.description}</td>
+          <td class="px-4 py-2 text-center">
+            <button onclick="downloadFile('${file.qrcode}', 'qr-${file.title}.png')"
+              class="bg-orange-400 px-3 py-1 text-white rounded hover:bg-orange-500">
+              Download
+            </button>
+          </td>
+          <td class="px-4 py-2 text-center">
+            <input type="file" accept="application/pdf" id="pdf-${file.id}" class="mb-2"/>
+            <button onclick="uploadPdf('${file.id}')" 
+              class="bg-orange-500 px-3 py-1 text-white rounded hover:bg-orange-600">
+              Upload
+            </button>
+          </td>
+        `;
+          tbody.appendChild(row);
+        });
+      }
+
+      async function fetchPublishedFiles() {
+        const res = await fetch("http://localhost:8000/getpublished");
+        const data = await res.json();
+        const tbody = document.getElementById("published-body");
+        tbody.innerHTML = "";
+        data.data.forEach((file) => {
+          const pdfBtn = file.pdf
+            ? `<button onclick="downloadFile('${file.pdf}', '${file.title}.pdf')"
+                          class="bg-green-400 px-3 py-1 text-white rounded hover:bg-green-500">
+                          Download PDF</button>`
+            : "No PDF";
+          const row = document.createElement("tr");
+          row.classList.add("bg-green-50");
+          row.innerHTML = `
+          <td class="px-4 py-2">${file.title}</td>
+          <td class="px-4 py-2">${file.description}</td>
+          <td class="px-4 py-2 text-center">
+            <button onclick="downloadFile('${file.qrcode}', 'qr-${file.title}.png')"
+              class="bg-green-400 px-3 py-1 text-white rounded hover:bg-green-500">
+              Download QR
+            </button>
+          </td>
+          <td class="px-4 py-2 text-center">${pdfBtn}</td>
+          <td class="px-4 py-2 text-center">
+            <button onclick="deleteFile('${file.id}')"
+              class="bg-red-500 px-3 py-1 text-white rounded hover:bg-red-600">
+              Delete
+            </button>
+          </td>
+        `;
+          tbody.appendChild(row);
+        });
+      }
+
+      async function fetchDeletedFiles() {
+        const res = await fetch("http://localhost:8000/getdeleted");
+        const data = await res.json();
+        const tbody = document.getElementById("deleted-body");
+        tbody.innerHTML = "";
+        data.data.forEach((file) => {
+          const row = document.createElement("tr");
+          row.classList.add("bg-red-50");
+          row.innerHTML = `
+          <td class="px-4 py-2">${file.title}</td>
+          <td class="px-4 py-2">${file.description}</td>
+        `;
+          tbody.appendChild(row);
+        });
+      }
+
+      // ===== Upload PDF =====
+      async function uploadPdf(id) {
+        const input = document.getElementById(`pdf-${id}`);
+        if (!input.files[0]) return alert("Select a PDF file first");
+        const formData = new FormData();
+        formData.append("pdf", input.files[0]);
+
+        try {
+          const res = await fetch(`http://localhost:8000/uploadpdf/${id}`, {
+            method: "POST",
+            body: formData,
+          });
+          const data = await res.json();
+          alert("PDF uploaded and file published!");
+          fetchPendingFiles();
+          fetchPublishedFiles();
+        } catch (err) {
+          console.error(err);
+          alert("Error uploading PDF");
+        }
+      }
+
+      // ===== Delete File =====
+      async function deleteFile(id) {
+        if (!confirm("Are you sure you want to delete this file?")) return;
+
+        try {
+          const res = await fetch(`http://localhost:8000/deletefile/${id}`, {
+            method: "POST",
+          });
+          if (!res.ok) throw new Error("Failed to delete file");
+
+          alert("File deleted successfully!");
+          fetchPublishedFiles();
+          fetchDeletedFiles();
+        } catch (err) {
+          console.error(err);
+          alert("Error deleting file");
+        }
+      }
+
+      // ===== Initial Fetch =====
+      fetchPendingFiles();
+      fetchPublishedFiles();
+      fetchDeletedFiles();
+    </script>
+  </body>
+</html>
