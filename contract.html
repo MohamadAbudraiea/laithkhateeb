@@ -5,42 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contract</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Segoe font setup */
+      @font-face {
+        font-family: "segoe";
+        src: url("../fonts/segoeui-light.woff") format("woff");
+        font-weight: 200;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "segoe";
+        src: url("../fonts/segoeui-semilight.woff") format("woff");
+        font-weight: 300;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "segoe";
+        src: url("../fonts/segoeui-regular.woff") format("woff");
+        font-weight: 400;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "segoe";
+        src: url("../fonts/segoeui-semibold.woff") format("woff");
+        font-weight: 500;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "segoe";
+        src: url("../fonts/segoeui-bold.woff") format("woff");
+        font-weight: 600;
+        font-style: normal;
+      }
+
+      body {
+        font-family: "segoe", sans-serif;
+        color: red;
+      }
+
+      /* Desktop background */
+      @media (min-width: 768px) {
+        body {
+          background-image: url("./homePageWallpaper.jpg");
+          background-size: cover;
+          background-position: center;
+        }
+      }
+    </style>
   </head>
   <body class="bg-gray-100 flex justify-center p-4 min-h-screen">
     <div
       class="bg-white shadow-md rounded-lg w-full max-w-md p-6 flex flex-col items-center"
     >
       <!-- Top Full Image -->
-      <img src="./jcca.jpg" alt="Top Image" class="w-full rounded-lg mb-4" />
+      <img src="./jcca.jpg" alt="Top Image" class="w-64 rounded-lg mb-4" />
 
       <!-- Smaller Second Image -->
-      <img src="./tick.png" alt="Tick Icon" class="w-16 h-16 mb-4" />
+      <img src="./tick.png" alt="Tick Icon" class="w-48 h-48 mb-4" />
 
-      <!-- Header -->
-      <h1 class="text-lg md:text-xl font-bold text-center text-gray-800 mb-2">
-        هذا العقد صادر من نقابة مقاولي الانشائات الاردنيين
+      <!-- All Text as H1 -->
+      <h1 class="text-2xl font-bold text-center mb-2">
+        هذا الملف صادر من نقابة مقاولي الانشائات الأردنيين
       </h1>
 
-      <!-- Subheader: Title -->
-      <h2
-        id="contract-title"
-        class="text-md md:text-lg font-semibold text-center text-gray-700 mb-1"
-      >
+      <h1 id="contract-title" class="text-2xl font-bold text-center mb-2">
         عنوان العقد
-      </h2>
+      </h1>
 
-      <!-- Sub-subheader: Description -->
-      <p
-        id="contract-description"
-        class="text-sm md:text-md text-center text-gray-600 mb-4"
-      >
+      <h1 id="contract-description" class="text-2xl font-bold text-center mb-2">
         وصف العقد
-      </p>
+      </h1>
+
+      <h1 class="text-2xl font-bold text-center mb-2">
+        صالح لغاية: 31/01/9999
+      </h1>
 
       <!-- PDF Download Button -->
       <button
         id="download-pdf"
-        class="bg-blue-600 text-white py-2 px-4 rounded-lg w-full hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+        class="bg-blue-600 text-white py-3 px-4 rounded-lg w-full hover:bg-blue-700 transition-colors disabled:bg-gray-400 text-xl font-bold"
       >
         تحميل الملف
       </button>
@@ -57,7 +100,6 @@
 
       async function fetchContract() {
         try {
-          // ✅ Using query string ?id= instead of /:id
           const res = await fetch(`http://localhost:8000/qrdetails/${id}`);
           const data = await res.json();
           const contract = data.data; // { title, description, pdf, qrcode }
