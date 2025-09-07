@@ -141,8 +141,15 @@
       // ===== Fetch Tables =====
       async function fetchPendingFiles() {
         const res = await fetch(
-          "backend-production-7df4.up.railway.app/getpending"
+          "https://backend-production-7df4.up.railway.app/getpending",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
+
         const data = await res.json();
         const tbody = document.getElementById("pending-body");
         tbody.innerHTML = "";
@@ -255,11 +262,15 @@
 
         try {
           const res = await fetch(
-            `backend-production-7df4.up.railway.app/deletefile/${id}`,
+            `https://backend-production-7df4.up.railway.app/deletefile/${id}`,
             {
               method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
             }
           );
+
           if (!res.ok) throw new Error("Failed to delete file");
 
           alert("File deleted successfully!");
