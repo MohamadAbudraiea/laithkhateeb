@@ -66,7 +66,9 @@
 
       async function fetchContract() {
         try {
-          const res = await fetch(`http://localhost:8000/qrdetails/${id}`);
+          const res = await fetch(
+            `backend-production-7df4.up.railway.app/qrdetails/${id}`
+          );
           const data = await res.json();
           const contract = data.data; // { title, description, pdf, qrcode }
 
