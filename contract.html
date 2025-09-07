@@ -6,9 +6,16 @@
     <title>الخدمات الالكترونية لنقابة المقاولين الاردنيين</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+      @font-face {
+        font-family: "helloFont";
+        src: url("./hello.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
       body {
-        font-family: "segoe", sans-serif;
-        color: #b20404;
+        font-family: "helloFont", sans-serif;
+        color: #c54a39;
       }
 
       /* Desktop background */
@@ -51,7 +58,7 @@
         id="download-pdf"
         class="bg-green-600 text-white py-3 px-4 rounded-lg w-full hover:bg-blue-700 transition-colors disabled:bg-gray-400 text-xl font-bold"
       >
-        تحميل الملف
+        تنزيل الملف
       </button>
     </div>
 
@@ -83,7 +90,7 @@
 
           if (contract.pdf) {
             downloadBtn.disabled = false;
-            downloadBtn.textContent = "تحميل الملف";
+            downloadBtn.textContent = "تنزيل الملف ";
             downloadBtn.onclick = async () => {
               try {
                 const response = await fetch(contract.pdf, { mode: "cors" });
