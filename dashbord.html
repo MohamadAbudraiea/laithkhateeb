@@ -121,7 +121,7 @@
 
         try {
           const res = await fetch(
-            "backend-production-7df4.up.railway.app/addqr",
+            "https://backend-production-7df4.up.railway.app/addqr",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -141,7 +141,7 @@
       // ===== Fetch Tables =====
       async function fetchPendingFiles() {
         const res = await fetch(
-          "https://backend-production-7df4.up.railway.app/getpending",
+          "https://https://backend-production-7df4.up.railway.app/getpending",
           {
             method: "GET",
             headers: {
@@ -157,29 +157,29 @@
           const row = document.createElement("tr");
           row.classList.add("bg-orange-50");
           row.innerHTML = `
-          <td class="px-4 py-2">${file.title}</td>
-          <td class="px-4 py-2">${file.description}</td>
-          <td class="px-4 py-2 text-center">
-            <button onclick="downloadFile('${file.qrcode}', 'qr-${file.title}.png')"
-              class="bg-orange-400 px-3 py-1 text-white rounded hover:bg-orange-500">
-              Download
-            </button>
-          </td>
-          <td class="px-4 py-2 text-center">
-            <input type="file" accept="application/pdf" id="pdf-${file.id}" class="mb-2"/>
-            <button onclick="uploadPdf('${file.id}')" 
-              class="bg-orange-500 px-3 py-1 text-white rounded hover:bg-orange-600">
-              Upload
-            </button>
-          </td>
-        `;
+                <td class="px-4 py-2">${file.title}</td>
+                <td class="px-4 py-2">${file.description}</td>
+                <td class="px-4 py-2 text-center">
+                  <button onclick="downloadFile('${file.qrcode}', 'qr-${file.title}.png')"
+                    class="bg-orange-400 px-3 py-1 text-white rounded hover:bg-orange-500">
+                    Download
+                  </button>
+                </td>
+                <td class="px-4 py-2 text-center">
+                  <input type="file" accept="application/pdf" id="pdf-${file.id}" class="mb-2"/>
+                  <button onclick="uploadPdf('${file.id}')"
+                    class="bg-orange-500 px-3 py-1 text-white rounded hover:bg-orange-600">
+                    Upload
+                  </button>
+                </td>
+              `;
           tbody.appendChild(row);
         });
       }
 
       async function fetchPublishedFiles() {
         const res = await fetch(
-          "backend-production-7df4.up.railway.app/getpublished"
+          "https://backend-production-7df4.up.railway.app/getpublished"
         );
         const data = await res.json();
         const tbody = document.getElementById("published-body");
@@ -187,35 +187,35 @@
         data.data.forEach((file) => {
           const pdfBtn = file.pdf
             ? `<button onclick="downloadFile('${file.pdf}', '${file.title}.pdf')"
-                          class="bg-green-400 px-3 py-1 text-white rounded hover:bg-green-500">
-                          Download PDF</button>`
+                                class="bg-green-400 px-3 py-1 text-white rounded hover:bg-green-500">
+                                Download PDF</button>`
             : "No PDF";
           const row = document.createElement("tr");
           row.classList.add("bg-green-50");
           row.innerHTML = `
-          <td class="px-4 py-2">${file.title}</td>
-          <td class="px-4 py-2">${file.description}</td>
-          <td class="px-4 py-2 text-center">
-            <button onclick="downloadFile('${file.qrcode}', 'qr-${file.title}.png')"
-              class="bg-green-400 px-3 py-1 text-white rounded hover:bg-green-500">
-              Download QR
-            </button>
-          </td>
-          <td class="px-4 py-2 text-center">${pdfBtn}</td>
-          <td class="px-4 py-2 text-center">
-            <button onclick="deleteFile('${file.id}')"
-              class="bg-red-500 px-3 py-1 text-white rounded hover:bg-red-600">
-              Delete
-            </button>
-          </td>
-        `;
+                <td class="px-4 py-2">${file.title}</td>
+                <td class="px-4 py-2">${file.description}</td>
+                <td class="px-4 py-2 text-center">
+                  <button onclick="downloadFile('${file.qrcode}', 'qr-${file.title}.png')"
+                    class="bg-green-400 px-3 py-1 text-white rounded hover:bg-green-500">
+                    Download QR
+                  </button>
+                </td>
+                <td class="px-4 py-2 text-center">${pdfBtn}</td>
+                <td class="px-4 py-2 text-center">
+                  <button onclick="deleteFile('${file.id}')"
+                    class="bg-red-500 px-3 py-1 text-white rounded hover:bg-red-600">
+                    Delete
+                  </button>
+                </td>
+              `;
           tbody.appendChild(row);
         });
       }
 
       async function fetchDeletedFiles() {
         const res = await fetch(
-          "backend-production-7df4.up.railway.app/getdeleted"
+          "https://backend-production-7df4.up.railway.app/getdeleted"
         );
         const data = await res.json();
         const tbody = document.getElementById("deleted-body");
@@ -224,9 +224,9 @@
           const row = document.createElement("tr");
           row.classList.add("bg-red-50");
           row.innerHTML = `
-          <td class="px-4 py-2">${file.title}</td>
-          <td class="px-4 py-2">${file.description}</td>
-        `;
+                <td class="px-4 py-2">${file.title}</td>
+                <td class="px-4 py-2">${file.description}</td>
+              `;
           tbody.appendChild(row);
         });
       }
@@ -240,7 +240,7 @@
 
         try {
           const res = await fetch(
-            `backend-production-7df4.up.railway.app/uploadpdf/${id}`,
+            `https://backend-production-7df4.up.railway.app/uploadpdf/${id}`,
             {
               method: "POST",
               body: formData,
@@ -262,7 +262,7 @@
 
         try {
           const res = await fetch(
-            `https://backend-production-7df4.up.railway.app/deletefile/${id}`,
+            `https://https://backend-production-7df4.up.railway.app/deletefile/${id}`,
             {
               method: "POST",
               headers: {
