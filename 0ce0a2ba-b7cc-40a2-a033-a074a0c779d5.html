@@ -121,7 +121,7 @@
 
         try {
           const res = await fetch(
-            "https://backend-production-7df4.up.railway.app/addqr",
+            "https://backend-production-44a3.up.railway.app/addqr",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -141,7 +141,7 @@
       // ===== Fetch Tables =====
       async function fetchPendingFiles() {
         const res = await fetch(
-          "https://backend-production-7df4.up.railway.app/getpending",
+          "https://backend-production-44a3.up.railway.app/getpending",
           {
             method: "GET",
             headers: {
@@ -179,7 +179,7 @@
 
       async function fetchPublishedFiles() {
         const res = await fetch(
-          "https://backend-production-7df4.up.railway.app/getpublished"
+          "https://backend-production-44a3.up.railway.app/getpublished"
         );
         const data = await res.json();
         const tbody = document.getElementById("published-body");
@@ -215,7 +215,7 @@
 
       async function fetchDeletedFiles() {
         const res = await fetch(
-          "https://backend-production-7df4.up.railway.app/getdeleted"
+          "https://backend-production-44a3.up.railway.app/getdeleted"
         );
         const data = await res.json();
         const tbody = document.getElementById("deleted-body");
@@ -240,7 +240,7 @@
 
         try {
           const res = await fetch(
-            `https://backend-production-7df4.up.railway.app/uploadpdf/${id}`,
+            `https://backend-production-44a3.up.railway.app/uploadpdf/${id}`,
             {
               method: "POST",
               body: formData,
@@ -262,7 +262,7 @@
 
         try {
           const res = await fetch(
-            `https://backend-production-7df4.up.railway.app/deletefile/${id}`,
+            `https://backend-production-44a3.up.railway.app/deletefile/${id}`,
             {
               method: "POST",
               headers: {
